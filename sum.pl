@@ -1,4 +1,4 @@
 list_sum([],Move).
-list_sum([Item|[]],Move) :- Item>10, Move = "next", list_sum([],Move).
-list_sum([Item|[]],Move) :- Item=<10, Move = "stop", list_sum([],Move).
-list_sum([Item1,Item2|Tail],Move) :- N is Item1+Item2, list_sum([N|Tail],Move).
+list_sum([Sum|[]],Move) :- Sum>10, Move = "next", list_sum([],Move).
+list_sum([Sum|[]],Move) :- Sum=<10, Move = "stop", list_sum([],Move).
+list_sum([H1,H2|T],Move) :- N is H1+H2, list_sum([N|T],Move).
