@@ -1,5 +1,5 @@
-findU([],_, U, U).
-findU(_,[], U, U).
+findU([], _, U, U).
+findU(_, [], U, U).
 findU([H1|L1], [H2|L2], U, Res) :- Diff is H1-H2, abs(Diff,Num), Num > U, findU(L1,L2,Num,Res).
 findU([H1|L1], [H2|L2], U, Res) :- Diff is H1-H2, abs(Diff,Num), Num =< U, findU(L1,L2,U,Res).
 
