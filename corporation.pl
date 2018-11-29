@@ -37,7 +37,7 @@ add([X|Z],N,Pos,C,[X|L]) :- N1 is N+1, add(Z,N1,Pos,C,L).
 give_coins(_,Y,0,_,Y).
 give_coins(L1,L2,Num,X,Y) :- ancestor(L1,2,Num,N), X1 is X+1, add(L2,1,N,X1,NewL), give_coins(L1,NewL,N,X1,Y).
 
-%e
+%the employer Num starts a job and quites afterwards
 work(L,Z,_,E,Z) :- same(L,E).
 work(L,Z,S,E,Res) :- notexists(L,S,Num), give_coins(L,Z,Num,1,Z1), delete(S,Num,S1), rnth(L,2,Num,L1), work(L1,Z1,S1,E,Res).
 
