@@ -62,12 +62,18 @@ diff([H1|L1], [H2|L2], [Num|L]) :- Diff is H1-H2, abs(Diff,Num), diff(L1,L2,L).
 fill(L,N,N,_,L).
 fill(L,C,N,Num,R) :- C1 is C+1, append(L,[Num],L1), fill(L1,C1,N,Num,R).
 
+% dif([],_,[]).
+% dif([H|T],Num,[D1|L]) :- D is H-Num, abs(D,D1), dif(T,Num,L).
+%
+% loop([],_,[]).
+% loop([H|L1],L2,[Min|R]) :- dif(L2,H,Diff), min_list(Diff,Min), loop(L1,L2,R).
+
 ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, T is Len1-Len2, nth1(Len2,L2,Num), fill(L2,0,T,Num,NewL2),
                    diff(L1,NewL2,Diff),
                    fix(L1,Diff,0,T,F),
                    findU(F,L2,0,U).
 
-ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(X,Len1), length(Y,Len2), Len1 < Len2, T is Len2-Len1, nth1(Len1,L1,Num), fill(L1,0,T,Num,NewL1),
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, T is Len2-Len1, nth1(Len1,L1,Num), fill(L1,0,T,Num,NewL1),
                    diff(NewL1,L2,Diff),
                    fix(L2,Diff,0,T,F),
                    findU(L1,F,0,U).
@@ -116,9 +122,9 @@ work(L,Z,S,Res) :- notexists(L,S,Num), give_coins(L,Z,Num,1,Z1), delete(S,Num,S1
 corporation(L,Result) :- length(L,Len1), Len is Len1+1, ones(0,Len,Z), serial(0,Len,S), work(L,Z,S,Result).
 
 %----------------------------------------- Ex.5 ------------------------------------------------------------------------------------------------------%
-% NOTE(1): Permutation seems to slow down effiency. Gonna change if I have time.
+% NOTE(1): Permutation seems to slow down effiency. Have to find smth else.
 
-% Find permutation of the 1st list
+% Find combinations of the 1st list by moving a number to othe position.
 % Check if permutation fits.
 % Checking if a permutation fits:
     %   1.Delete a sp number from all lists and permutation.
@@ -144,12 +150,13 @@ findpos([],_,0).
 findpos([H|_], Y, 0) :- same(H,Y).
 findpos([_|T], Y, N) :- findpos(T,Y,N1), N is N1+1.
 
-%checks if a prmutation fits
 fit([],_,_,_).
 fit(L,P,N,Len) :- delsp(L,N,L1), delsp([P],N,[L2|_]), findpos(L1,L2,Pos), Pos=<Len, deletelist(L,Pos,0,NewL), Len1 is Len-1, Num is N+1, fit(NewL,P,Num,Len1).
 
-%finds all permutations of a specific list
-permutation([],[]).
-permutation(L,[X|Y]) :- select(X,L,Q), permutation(Q,Y).
+rem(X,[X|L],L).
+rem(X,[H|T1],[H|T2]) :- rem(X,T1,T2).
 
-findlist([H|T],Y) :- permutation(H,Y), length(Y,Len), fit([H|T],Y,1,Len).
+switch_pos([],[]).
+switch_pos([H|T],L) :- switch_pos(T,Q), rem(H,L,Q).
+
+findlist([H|T],Y) :- switch_pos(H,Y), length(Y,Len), fit([H|T],Y,1,Len).
