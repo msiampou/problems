@@ -68,16 +68,8 @@ fill(L,C,N,Num,R) :- C1 is C+1, append(L,[Num],L1), fill(L1,C1,N,Num,R).
 % loop([],_,[]).
 % loop([H|L1],L2,[Min|R]) :- dif(L2,H,Diff), min_list(Diff,Min), loop(L1,L2,R).
 
-ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, T is Len1-Len2, nth1(Len2,L2,Num), fill(L2,0,T,Num,NewL2),
-                   diff(L1,NewL2,Diff),
-                   fix(L1,Diff,0,T,F),
-                   findU(F,L2,0,U).
-
-ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, T is Len2-Len1, nth1(Len1,L1,Num), fill(L1,0,T,Num,NewL1),
-                   diff(NewL1,L2,Diff),
-                   fix(L2,Diff,0,T,F),
-                   findU(L1,F,0,U).
-
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, T is Len1-Len2, nth1(Len2,L2,Num), fill(L2,0,T,Num,NewL2), diff(L1,NewL2,Diff), fix(L1,Diff,0,T,F), findU(F,L2,0,U).
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, T is Len2-Len1, nth1(Len1,L1,Num), fill(L1,0,T,Num,NewL1), diff(NewL1,L2,Diff), fix(L2,Diff,0,T,F), findU(L1,F,0,U).
 ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), findU(L1,L2,0,U).
 
 %----------------------------------------- Ex.4 ------------------------------------------------------------------------------------------------------%
@@ -100,7 +92,7 @@ rnth([H|T],N,Pos,[H|X]) :- N1 is N+1, rnth(T,N1,Pos,X).
 %find empolyee --call it with starting pos = 2. --
 ancestor([],_,_,X) :- X is 0.
 ancestor([X|_],Pos,Pos,X).
-ancestor([_|T],N,Pos,X) :- N1 is N+1, ancestor(T,N1,Pos,X).     %decrease with 2 first
+ancestor([_|T],N,Pos,X) :- N1 is N+1, ancestor(T,N1,Pos,X). 
 
 %find the first number that does not exist in list.
 notexists(L,[H|_],H) :- \+ member(H,L).
