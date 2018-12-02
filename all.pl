@@ -12,24 +12,26 @@ biscuits(K,1,[K|L]) :- biscuits(K,0,L).
 biscuits(K,N,[N|L]) :- Rem is K-N, C is N-1, biscuits(Rem,C,L).
 
 %----------------------------------------- Ex.2 ------------------------------------------------------------------------------------------------------%
-% TODO: 1.More testing.
-%       2.Add [x,y][y,x] case.
+% NOTE(1): 1. Add [x,y][y,x] test case.
+
+% Replace each letter with its corresponding number. Same thing for letters.
+% If a pair of letters appers in solution list, their corresponding numbers are inf.
+% When solutions are inf we use a special case: every letter equals to 1.
 
 replace(_, _, [], []).
 replace(X, R, [X|T1], [R|T2]) :- replace(X, R, T1, T2).
 replace(X, R, [H|T1], [H|T2]) :- \+ (H = X), replace(X, R, T1, T2).
 
 solvelists([],[],[]).
-solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT]) :-    number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], [(H1,H2)|NewT]) :- \+ number(H1),    number(H2), replace(H1,H2,T1,L1), replace(H1,H2,T2,L2) ,solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], NewT) :-           \+ number(H1), \+ number(H2), H1 == H2,                                   solvelists(T1, T2, NewT).
-solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT]) :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], NewT) :-              number(H1),    number(H2), H1 =:= H2,                                  solvelists(T1, T2, NewT).
+solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :-    number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
+solvelists([H1|T1], [H2|T2], [(H1,H2)|NewT])        :- \+ number(H1),    number(H2), replace(H1,H2,T1,L1), replace(H1,H2,T2,L2) ,solvelists(L1, L2, NewT).
+solvelists([H1|T1], [H2|T2], NewT)                  :- \+ number(H1), \+ number(H2), H1 == H2,                                   solvelists(T1, T2, NewT).
+solvelists([H1|T1], [H2|T2], [(H2,K), (H1,K)|NewT]) :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT), \+ number(H1), \+ number(H2), K is 1.
+solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
+solvelists([H1|T1], [H2|T2], NewT)                  :-    number(H1),    number(H2), H1 =:= H2,                                  solvelists(T1, T2, NewT).
 
 %----------------------------------------- Ex.3 ------------------------------------------------------------------------------------------------------%
-
 % NOTE(1): Maybe we could use less functions.
-% TODO: Try to use fewer functions.
 
 % 1.Find the shortest list.
 % 2.Find the last element of this list.
@@ -77,17 +79,14 @@ ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), findU(L1,L2,0,U).
 % 1.Construct a list of coins initialized with 1.
 % 2.Choose the one that does not exist in list.
 % 3.Find his ancestors and add coins based on counter.
-% 4.Remove 1st ansestor from list and repeat steps
+% 4.Remove 1st ansestor from list and repeat steps.
 
-%constract a list with 1
 ones(Max, Max, []).
 ones(N, Max, [1|L]) :- N1 is N+1, ones(N1, Max, L).
 
-%constract a list with sequences of numbers
 serial(Max, Max, []).
 serial(N, Max, [N1|L]) :- N1 is N+1, serial(N1, Max, L).
 
-%remove nth element from list
 rnth([],_,_,[]).
 rnth([_|T],Pos,Pos,[-1|X]) :- N1 is Pos+1, rnth(T,N1,Pos,X).
 rnth([H|T],N,Pos,[H|X]) :- N1 is N+1, rnth(T,N1,Pos,X).
@@ -117,8 +116,15 @@ work(L,Z,S,Res) :- notexists(L,S,Num), give_coins(L,Z,Num,1,Z1), delete(S,Num,S1
 corporation(L,Result) :- length(L,Len1), Len is Len1+1, ones(0,Len,Z), serial(0,Len,S), work(L,Z,S,Result).
 
 %----------------------------------------- Ex.5 ------------------------------------------------------------------------------------------------------%
+% NOTE(1): Permutation seems to slow down effiency. Gonna change if I have time.
 
-%TODO: Change permutation
+% Find permutation of the 1st list
+% Check if permutation fits.
+% Checking if a permutation fits:
+    %   1.Delete a sp number from all lists and permutation.
+    %   2.Permutation must be the same with 1 list.
+    %   3.Delete this list and repeat steps for another number.
+    %   4.If we end up with an empty list of lists, permutation fits.
 
 %delete a specific number from every list
 delsp([],_,[]).
