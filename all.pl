@@ -12,7 +12,7 @@ biscuits(K,1,[K|L]) :- biscuits(K,0,L).
 biscuits(K,N,[N|L]) :- Rem is K-N, C is N-1, biscuits(Rem,C,L).
 
 %----------------------------------------- Ex.2 ------------------------------------------------------------------------------------------------------%
-% NOTE(1): 1. Add [x,y][y,x] test case.
+% NOTE(1): 1. Check [x,y][y,x] test case.
 
 % Replace each letter with its corresponding number. Same thing for letters.
 % If a pair of letters appers in solution list, their corresponding numbers are inf.
@@ -33,12 +33,12 @@ solvelists([H1|T1], [H2|T2], NewT)                  :-    number(H1),    number(
 %----------------------------------------- Ex.3 ------------------------------------------------------------------------------------------------------%
 % NOTE(1): Maybe we could use less functions.
 
-% 1.Find the shortest list.
-% 2.Find the last element of this list.
-% 3.Fill the empty positions with this number, now length(L1) = length(L2).
-% 4.Find the positions of max differences of L1 and L2.
-% 5.Delete numbers of such positions in longest list.
-% 6.Now, find U.
+% 1.Short lists.
+% 2.Find the shortest list.
+% 3.For every number in shortest list find the min diffence with other's list's elements.
+% 4.Discard the element that gives the biggest diffence from the 2nd list.
+% 5.Repeat until length(L1) = length(L2).
+% 7.Find max difference (U).
 
 findU([], _, U, U).
 findU(_, [], U, U).
@@ -49,27 +49,14 @@ indexOf([], _, 0).
 indexOf([N|_], N, 0).
 indexOf([_|T], N, I):- indexOf(T,N,X), I is X+1.
 
-delete_nth([],_,_,[]).
-delete_nth([_|T], Pos, Pos, L) :- N1 is Pos+1, delete_nth(T,N1,Pos,L).
-delete_nth([H|T], N, Pos, [H|L]) :- N1 is N+1, delete_nth(T,N1,Pos,L).
+dif([],_,[]).
+dif([H|T],Num,[D1|L]) :- D is H-Num, abs(D,D1), dif(T,Num,L).
 
-fix(L,_,N,N,L).
-fix(L,Dif,C,N,Res) :- C1 is C+1, max_list(Dif,Num), indexOf(Dif,Num,Pos), delete_nth(L,0,Pos,L1), delete(Dif,Num,D), fix(L1,D,C1,N,Res).
+fix([],_,[]).
+fix([H|L1],L2,[Num|R]) :- dif(L2,H,Diff), min_list(Diff,Min), indexOf(Diff,Min,Pos), nth0(Pos,L2,Num), select(Num,L2,L3), fix(L1,L3,R).
 
-diff([],[],[]).
-diff([H1|L1], [H2|L2], [Num|L]) :- Diff is H1-H2, abs(Diff,Num), diff(L1,L2,L).
-
-fill(L,N,N,_,L).
-fill(L,C,N,Num,R) :- C1 is C+1, append(L,[Num],L1), fill(L1,C1,N,Num,R).
-
-% dif([],_,[]).
-% dif([H|T],Num,[D1|L]) :- D is H-Num, abs(D,D1), dif(T,Num,L).
-%
-% loop([],_,[]).
-% loop([H|L1],L2,[Min|R]) :- dif(L2,H,Diff), min_list(Diff,Min), loop(L1,L2,R).
-
-ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, T is Len1-Len2, nth1(Len2,L2,Num), fill(L2,0,T,Num,NewL2), diff(L1,NewL2,Diff), fix(L1,Diff,0,T,F), findU(F,L2,0,U).
-ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, T is Len2-Len1, nth1(Len1,L1,Num), fill(L1,0,T,Num,NewL1), diff(NewL1,L2,Diff), fix(L2,Diff,0,T,F), findU(L1,F,0,U).
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, fix(L2,L1,F), findU(F,L2,0,U).
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, fix(L1,L2,F), findU(L1,F,0,U).
 ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), findU(L1,L2,0,U).
 
 %----------------------------------------- Ex.4 ------------------------------------------------------------------------------------------------------%
@@ -92,7 +79,7 @@ rnth([H|T],N,Pos,[H|X]) :- N1 is N+1, rnth(T,N1,Pos,X).
 %find empolyee --call it with starting pos = 2. --
 ancestor([],_,_,X) :- X is 0.
 ancestor([X|_],Pos,Pos,X).
-ancestor([_|T],N,Pos,X) :- N1 is N+1, ancestor(T,N1,Pos,X). 
+ancestor([_|T],N,Pos,X) :- N1 is N+1, ancestor(T,N1,Pos,X).
 
 %find the first number that does not exist in list.
 notexists(L,[H|_],H) :- \+ member(H,L).
@@ -151,4 +138,4 @@ rem(X,[H|T1],[H|T2]) :- rem(X,T1,T2).
 switch_pos([],[]).
 switch_pos([H|T],L) :- switch_pos(T,Q), rem(H,L,Q).
 
-findlist([H|T],Y) :- switch_pos(H,Y), length(Y,Len), fit([H|T],Y,1,Len).
+findlist([H|T],Y) :- switch_pos(H,Y), fit([H|T],Y,1,5).
