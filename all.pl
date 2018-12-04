@@ -12,11 +12,11 @@ biscuits(K,1,[K|L]) :- biscuits(K,0,L).
 biscuits(K,N,[N|L]) :- Rem is K-N, C is N-1, biscuits(Rem,C,L).
 
 %----------------------------------------- Ex.2 ------------------------------------------------------------------------------------------------------%
-% NOTE(1): 1. Check [x,y][y,x] test case.
+% NOTE(1): There are test cases that have more than 1 correct solutions.
 
 % Replace each letter with its corresponding number. Same thing for letters.
 % If a pair of letters appers in solution list, their corresponding numbers are inf.
-% When solutions are inf we use a special case: every letter equals to 1.
+% When solutions are inf an empty list is returned, to show so.
 
 replace(_, _, [], []).
 replace(X, R, [X|T1], [R|T2]) :- replace(X, R, T1, T2).
@@ -26,7 +26,7 @@ solvelists([],[],[]).
 solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :-    number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
 solvelists([H1|T1], [H2|T2], [(H1,H2)|NewT])        :- \+ number(H1),    number(H2), replace(H1,H2,T1,L1), replace(H1,H2,T2,L2) ,solvelists(L1, L2, NewT).
 solvelists([H1|T1], [H2|T2], NewT)                  :- \+ number(H1), \+ number(H2), H1 == H2,                                   solvelists(T1, T2, NewT).
-solvelists([H1|T1], [H2|T2], [(H2,K), (H1,K)|NewT]) :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT), \+ number(H1), \+ number(H2), K is 1.
+solvelists([H1|T1], [H2|T2], NewT)                  :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
 solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
 solvelists([H1|T1], [H2|T2], NewT)                  :-    number(H1),    number(H2), H1 =:= H2,                                  solvelists(T1, T2, NewT).
 
