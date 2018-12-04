@@ -32,16 +32,16 @@ fillones([(H1,N)|T1],[H2|T2],[(H1,N)|R]) :- H1==H2, fillones(T1,T2,R).
 fillones([],[H2|T2],[(H2,K)|R]) :- K is 1, fillones([],T2,R).
 fillones([(H1,N)|T1],[H2|T2],[(H2,K)|R]) :- K is 1, fillones([(H1,N)|T1],T2,R).
 
-solvelists([],[],[]).
-solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :-    number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], [(H1,H2)|NewT])        :- \+ number(H1),    number(H2), replace(H1,H2,T1,L1), replace(H1,H2,T2,L2) ,solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], NewT)                  :- \+ number(H1), \+ number(H2), H1 == H2,                                   solvelists(T1, T2, NewT).
-solvelists([H1|T1], [H2|T2], NewT)                  :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], [(H2,H1)|NewT])        :- \+ number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), solvelists(L1, L2, NewT).
-solvelists([H1|T1], [H2|T2], NewT)                  :-    number(H1),    number(H2), H1 =:= H2,                                  solvelists(T1, T2, NewT).
+fitting([],[],[]).
+fitting([H1|T1], [H2|T2], [(H2,H1)|NewT])   :-    number(H1), \+ number(H2), replace(H2,H1,T2,L2), replace(H2,H1,T1,L1), fitting(L1, L2, NewT).
+fitting([H1|T1], [H2|T2], [(H1,H2)|NewT])   :- \+ number(H1),    number(H2), replace(H1,H2,T1,L1), replace(H1,H2,T2,L2) ,fitting(L1, L2, NewT).
+fitting([H1|T1], [H2|T2], NewT)             :- \+ number(H1), \+ number(H2),                                             fitting(T1, T2, NewT).
+fitting([H1|T1], [H2|T2], NewT)             :-    number(H1),    number(H2), H1 =:= H2,                                  fitting(T1, T2, NewT).
 
-final(L1,L2,F) :- keepletters(L1,R1), keepletters(L2,R2), append(R1,R2,Letters), sort(Letters,T), solvelists(L1,L2,R3), sort(R3,Res), fillones(Res,T,F).
-%----------------------------------------- Ex.3 ------------------------------------------------------------------------------------------------------%
+solvelists(L1,L2,F) :- keepletters(L1,R1), keepletters(L2,R2), append(R1,R2,Letters), sort(Letters,T), fitting(L1,L2,R3),
+                        reverse(L1,NewL1), reverse(L2,NewL2), fitting(NewL1,NewL2,R4), append(R3,R4,R5), sort(R5,Res), fillones(Res,T,F).
+
+%----------------------------------------- Ex.3 -----------------------------------------------------------------------------------------------------------%
 % NOTE(1): Maybe we could use less functions.
 
 % 1.Short lists.
