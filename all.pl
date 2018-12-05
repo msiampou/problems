@@ -17,7 +17,8 @@ biscuits(K,N,[N|L]) :- Rem is K-N, C is N-1, biscuits(Rem,C,L).
 
 % Replace each letter with its corresponding number. Same thing for letters.
 % If a pair of letters appers in solution list, their corresponding numbers are inf.
-% When solutions are inf an empty list is returned, to show so.
+% 1 (one) was chosen as default solution when solutions are inf. 
+%   -- ex: solvelists([x,y],[x,y],L). returns L = [(x,1),(y,1)]
 
 replace(_, _, [], []).
 replace(X, R, [X|T1], [R|T2]) :- replace(X, R, T1, T2).
