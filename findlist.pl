@@ -16,12 +16,13 @@ findpos([],_,0).
 findpos([H|_], Y, 0) :- same(H,Y).
 findpos([_|T], Y, N) :- findpos(T,Y,N1), N is N1+1.
 
-%checks if a prmutation fits
 fit([],_,_,_).
 fit(L,P,N,Len) :- delsp(L,N,L1), delsp([P],N,[L2|_]), findpos(L1,L2,Pos), Pos=<Len, deletelist(L,Pos,0,NewL), Len1 is Len-1, Num is N+1, fit(NewL,P,Num,Len1).
 
-%finds all permutations of a specific list
-permutation([],[]).
-permutation(L,[X|Y]) :- select(X,L,Q), permutation(Q,Y).
+rem(X,[X|L],L).
+rem(X,[H|T1],[H|T2]) :- rem(X,T1,T2).
 
-findlist([H|T],Y) :- permutation(H,Y), length(Y,Len), fit([H|T],Y,1,Len).
+switch_pos([],[]).
+switch_pos([H|T],L) :- switch_pos(T,Q), rem(H,L,Q).
+
+findlist([H|T],Y) :- switch_pos(H,Y), fit([H|T],Y,1,5).
