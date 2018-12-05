@@ -42,13 +42,16 @@ solvelists(L1,L2,F) :- keepletters(L1,R1), keepletters(L2,R2), append(R1,R2,Lett
                         reverse(L1,NewL1), reverse(L2,NewL2), fitting(NewL1,NewL2,R4), append(R3,R4,R5), sort(R5,Res), fillones(Res,T,F).
 
 %----------------------------------------- Ex.3 -----------------------------------------------------------------------------------------------------------%
-% NOTE(1): Maybe we could use less functions.
+% NOTE(1): Using permutations seemed to slow down efficiency. 
+% NOTE(2): Efficient way of finding U when lists do not have the same length. 
+%       -- Tested for many cases, seemed to work for all. Perhaps we could do more testing.
 
 % 1.Short lists.
 % 2.Find the shortest list.
 % 3.For every number in shortest list find the min diffence with other's list's elements.
 % 4.Discard the element that gives the biggest diffence from the 2nd list.
 % 5.Repeat until length(L1) = length(L2).
+% 6.Sort changed list.
 % 7.Find max difference (U).
 
 findU([], _, U, U).
