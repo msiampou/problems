@@ -3,15 +3,16 @@ findU(_, [], U, U).
 findU([H1|L1], [H2|L2], U, Res) :- Diff is H1-H2, abs(Diff,Num), Num > U, findU(L1,L2,Num,Res).
 findU([H1|L1], [H2|L2], U, Res) :- Diff is H1-H2, abs(Diff,Num), Num =< U, findU(L1,L2,U,Res).
 
-lessUgly([], _, _, _, N, N).
-lessUgly(_, [], _, _, N, N).
-lessUgly([H1|L1], [H2|L2], [H3|L3], U, _, Res) :- Diff is H1-H2, abs(Diff,Num), Num > U, lessUgly(L1,L2,L3,Num,H3,Res).
-lessUgly([H1|L1], [H2|L2], [_|L3], U, N, Res) :- Diff is H1-H2, abs(Diff,Num), Num =< U, lessUgly(L1,L2,L3,U,N,Res).
+indexOf([], _, 0).
+indexOf([N|_], N, 0).
+indexOf([_|T], N, I):- indexOf(T,N,X), I is X+1.
 
-fix(_,_,L,0,L).
-fix(L1,L2,L,T,NewL) :- N is T-1, lessUgly(L1,L2,L,0,0,Pos), delete(L,Pos,K), length(L1,Len1), length(L2,Len2), Len1 > Len2,fix(K,L2,K,N,NewL).
-fix(L1,L2,L,T,NewL) :- N is T-1, lessUgly(L1,L2,L,0,0,Pos), delete(L,Pos,K), length(L1,Len1), length(L2,Len2), Len1 < Len2, fix(L1,K,K,N,NewL).
+dif([],_,[]).
+dif([H|T],Num,[D1|L]) :- D is H-Num, abs(D,D1), dif(T,Num,L).
 
-ugliness(L1,L2,U) :- sort(L1,NewL1), sort(L2,NewL2), length(L1,Len1), length(L2,Len2), Len1 =:= Len2, findU(NewL1,NewL2,0,U).
-ugliness(L1,L2,U) :- sort(L1,NewL1), sort(L2,NewL2), length(L1,Len1), length(L2,Len2), Len1 > Len2, T is Len1-Len2, fix(NewL1,NewL2,NewL1,T,NewList3), findU(NewList3,NewL2,0,U).
-ugliness(L1,L2,U) :- sort(L1,NewL1), sort(L2,NewL2), length(L1,Len1), length(L2,Len2), Len1 < Len2, T is Len2-Len1, fix(NewL1,NewL2,NewL2,T,NewList3), findU(NewL1,NewList3,0,U).
+fix([],_,[]).
+fix([H|L1],L2,[Num|R]) :- dif(L2,H,Diff), min_list(Diff,Min), indexOf(Diff,Min,Pos), nth0(Pos,L2,Num), select(Num,L2,L3), fix(L1,L3,R).
+
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 > Len2, fix(L2,L1,F), msort(F,F1), findU(F1,L2,0,U).
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), length(L1,Len1), length(L2,Len2), Len1 < Len2, fix(L1,L2,F), msort(F,F2), findU(L1,F2,0,U).
+ugliness(X,Y,U) :- msort(X,L1), msort(Y,L2), findU(L1,L2,0,U).
