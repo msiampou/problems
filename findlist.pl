@@ -1,3 +1,13 @@
+% NOTE(1): Permutation seems to slow down effiency. Have to find smth else.
+
+% Find combinations of the 1st list by moving a number to othe position.
+% Check if permutation fits.
+% Checking if a permutation fits:
+    %   1.Delete a sp number from all lists and permutation.
+    %   2.Permutation must be the same with 1 list.
+    %   3.Delete this list and repeat steps for another number.
+    %   4.If we end up with an empty list of lists, permutation fits.
+
 %delete a specific number from every list
 delsp([],_,[]).
 delsp([H|T],Num,[Y|X]) :- delete(H,Num,Y), delsp(T,Num,X).
