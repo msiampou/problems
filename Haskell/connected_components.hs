@@ -43,6 +43,7 @@ flatten [] = []
 flatten (h:t) = h ++ flatten t
 
 remove :: Int -> [Int] -> [[Int]] -> [[Int]]
+remove _ _ [] = []
 remove _ [] t2 = t2
 remove curr (h1:t1) (h2:t2)
                         | curr == h1 = [] : remove (curr+1) t1 t2
