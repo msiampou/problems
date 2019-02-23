@@ -1,3 +1,18 @@
+import Data.List
+import Debug.Trace
+import Functions
+import Data.Function (on)
+import qualified Data.Set as Set
+
+burnt_substacks :: Int -> ([(Int,Int)],[Int]) -> [(Int,Int)] -> [([(Int,Int)],[Int])] -> Set.Set [(Int,Int)] -> ([([(Int,Int)],[Int])],Set.Set [(Int,Int)],Int)
+burnt_substacks n stack goal frontier explored | x == goal = (fr,explored,1)
+                                               | n > length(fst stack) = (frontier,explored,0)
+                                               | (Set.member x explored == False) && (elem x (map fst frontier) == False) = burnt_substacks (n+1) stack goal fr explored
+                                               | otherwise = burnt_substacks (n+1) stack goal frontier explored
+                                               where x = flip_stack' n (fst stack)
+                                                     p = (snd stack) ++ [n]
+                                                     fr = frontier ++ [(x,p)]
+
 burnt_bs :: [([(Int,Int)],[Int])] -> Set.Set [(Int,Int)] -> [([(Int,Int)],[Int])] -> Set.Set [(Int,Int)] -> [Int]
 burnt_bs frontier explored frontier' explored' | (elem (fst (head frontier')) (map fst frontier) == True) = (snd (frontier!!pos)) ++ reverse(snd (head frontier'))
                                                | (elem (fst (head frontier)) (map fst frontier') == True) = (snd element) ++ reverse(snd (frontier'!!pos'))
