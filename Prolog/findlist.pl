@@ -1,5 +1,3 @@
-% NOTE(1): Permutation seems to slow down effiency. Have to find smth else.
-
 % Find combinations of the 1st list by moving a number to othe position.
 % Check if permutation fits.
 % Checking if a permutation fits:
