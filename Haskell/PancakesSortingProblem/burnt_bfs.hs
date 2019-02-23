@@ -1,3 +1,9 @@
+import Data.List
+import Debug.Trace
+import Functions
+import Data.Function (on)
+import qualified Data.Set as Set
+
 burnt_substacks :: Int -> ([(Int,Int)],[Int]) -> [(Int,Int)] -> [([(Int,Int)],[Int])] -> Set.Set [(Int,Int)] -> ([([(Int,Int)],[Int])],Set.Set [(Int,Int)],Int)
 burnt_substacks n stack goal frontier explored | x == goal = (fr,explored,1)
                                                | n > length(fst stack) = (frontier,explored,0)
