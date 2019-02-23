@@ -4,6 +4,10 @@ import Functions
 import Data.Function (on)
 import qualified Data.Set as Set
 
+----------------------------
+-- Pancakes Sorting Problem
+----------------------------
+
 is_an_adjacency :: Int -> Int -> Int -> Bool
 is_an_adjacency a b l | (abs(a-b) == 1) || (a==1 && b==l) = True
                       | otherwise = False
@@ -63,10 +67,6 @@ flipping list posx posp = (fs,ps)
                                 path = snd list
                                 fs = flip_stack posv vs
                                 ps = path ++ [posy,posz,posv]
-
-----------------------------
--- Pancakes Sorting Problem
-----------------------------
 
 --t and t+o are both free
 case_1a :: ([Int],[Int]) -> ([Int],[Int])
