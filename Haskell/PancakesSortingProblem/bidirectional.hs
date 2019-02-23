@@ -2,6 +2,19 @@
 ----- Bidirectional Sorting Function
 --------------------------------------
 
+-- generating successors of stack
+-- searching for goal at leaf nodes before pushing them in frontier
+-- returns 1 if goal was found - return path and exit
+-- returns frontier and explored set in any case
+substacks :: Int -> ([Int],[Int]) -> [Int] -> [([Int],[Int])] -> Set.Set [Int] -> ([([Int],[Int])],Set.Set [Int],Int)
+substacks n stack goal frontier explored | x == goal = (fr,explored,1)
+                                         | n > length(fst stack) = (frontier,explored,0)
+                                         | (Set.member x explored == False) && (elem x (map fst frontier) == False) = substacks (n+1) stack goal fr explored
+                                         | otherwise = substacks (n+1) stack goal frontier explored
+                                         where x = flip_stack n (fst stack)
+                                               p = (snd stack) ++ [n]
+                                               fr = frontier ++ [(x,p)]
+
 -- generating successors of intial stack and sorted stack at the same time
 -- returns path when a successors is found in both frontiers
 bbfs :: [([Int],[Int])] -> Set.Set [Int] -> [([Int],[Int])] -> Set.Set [Int] -> [Int]
